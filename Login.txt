@@ -1,0 +1,105 @@
+User class
+
+package com.aurionpro.model;
+
+import com.aurionpro.exception.EmailNotValidException;
+import com.aurionpro.exception.PasswordNotValidException;
+
+public class User {
+	
+private String email;
+private String password;
+
+public User(String email, String password) {
+	super();
+	if(!isValidEmail(email))
+		throw new EmailNotValidException("The email must be alphanumeric.It must contain atleast one special character.");	
+	this.email = email;
+	if( !isValidPassword(password))
+		throw new PasswordNotValidException("Password must be at least 8 characters long and include at least one uppercase, one lowercase, one digit, and one special character.");
+	this.password = password;
+}
+
+private boolean isValidEmail(String email) {
+    
+    return email != null && email.matches(".+@.+\\..+");
+}
+
+private boolean isValidPassword(String password) {
+   
+    return password != null && password.length() >= 8 &&
+           password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$");
+}
+
+
+@Override
+public String toString() {
+	return "User [email=" + email + ", password=" + password + "]";
+}
+
+}
+
+UserTest
+
+package com.aurionpro.test;
+
+import java.util.Scanner;
+import com.aurionpro.exception.EmailNotValidException;
+import com.aurionpro.exception.PasswordNotValidException;
+import com.aurionpro.model.User;
+
+public class UserTest {
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Welcome to the application");
+            System.out.println("Please login to your account");
+            System.out.println("Enter your email Id:");
+            String email = scanner.nextLine();
+            System.out.println("Enter your password:");
+            String password = scanner.nextLine();
+            User user1 = new User(email, password);
+            System.out.println("Welcome to the home page");
+        } catch (EmailNotValidException | PasswordNotValidException e) {
+            System.out.println(e.getMessage()); // Print exception message
+        }
+    }
+}
+
+
+PasswordNotValidException Class
+
+package com.aurionpro.exception;
+
+public class PasswordNotValidException extends RuntimeException{
+	
+private String password;
+
+
+public PasswordNotValidException(String password) {
+	super();
+	this.password = password;
+}
+
+
+public String getMessage() {
+	return "The password you entered is wrong. ";
+}
+}
+
+
+EmailNotValidException class
+package com.aurionpro.exception;
+
+public class EmailNotValidException extends RuntimeException{
+private String email;
+
+public EmailNotValidException(String email) {
+	super();
+	this.email = email;
+}
+
+public String getMessage() {
+	return "Your email is invalid.Please enter a valid email. ";
+}
+}
