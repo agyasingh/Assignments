@@ -1,0 +1,203 @@
+Game.java
+
+
+import java.util.Scanner;
+
+import com.aurionpro.model.Player;
+import com.aurionpro.model.TicTacBoard;
+
+public class Game {
+	public Scanner scanner=new Scanner(System.in);
+	 public static void main(String[] args) {
+	        TicTacBoard board = new TicTacBoard();
+	        Player bob = new Player('X'); 
+	        Player mary = new Player('O'); 
+
+	        Player currentPlayer = bob; 
+
+	       
+	        while (!board.isBoardFull() && !board.checkForWin()) {
+	            // Display current board state
+	            displayBoard(board);
+
+	           
+	            System.out.println("Current turn: Player " + currentPlayer.getSymbol());
+	            boolean validMove = false;
+	            while (!validMove) {
+	                int[] move = getPlayerMove(currentPlayer);
+	                validMove = board.makeMove(move[0], move[1], currentPlayer.getSymbol());
+	                if (!validMove) {
+	                    System.out.println("Invalid move. Try again.");
+	                }
+	            }
+
+	            // Switch players
+	            currentPlayer = (currentPlayer == bob) ? mary : bob;
+	        }
+
+	        // Game over
+	        displayBoard(board);
+	        if (board.checkForWin()) {
+	            System.out.println("Player " + currentPlayer.getSymbol() + " wins!");
+	        } else {
+	            System.out.println("It's a draw!");
+	        }
+	    }
+
+	    public static void displayBoard(TicTacBoard board) {
+	        System.out.println("Current Board:");
+	        for (int i = 0; i < 3; i++) {
+	            for (int j = 0; j < 3; j++) {
+	                System.out.print(board.getBoard()[i][j] + " ");
+	            }
+	            System.out.println();
+	        }
+	    }
+
+	    public static int[] getPlayerMove(Player player) {
+	        
+	        Scanner scanner = new Scanner(System.in);
+	        System.out.print("Enter row (0-2) for Player " + player.getSymbol() + ": ");
+	        int row = scanner.nextInt();
+	        System.out.print("Enter column (0-2) for Player " + player.getSymbol() + ": ");
+	        int col = scanner.nextInt();
+	        return new int[]{row, col};
+	    }
+
+}
+TicTacBoard
+
+package com.aurionpro.model;
+
+public class TicTacBoard {
+	private char[][] board;
+    private static final int SIZE = 3; 
+    
+    public TicTacBoard() {
+        board = new char[SIZE][SIZE];
+        resetBoard();
+    }
+    
+    
+
+    public char[][] getBoard() {
+		return board;
+	}
+
+
+
+	public void setBoard(char[][] board) {
+		this.board = board;
+	}
+
+
+
+	public static int getSize() {
+		return SIZE;
+	}
+
+
+
+	public void resetBoard() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                board[i][j] = '-';
+            }
+        }
+    }
+
+    public boolean makeMove(int row, int col, char symbol) {
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+            return false; 
+        }
+        if (board[row][col] != '-') {
+            return false; 
+        }
+        board[row][col] = symbol;
+        return true;
+    }
+
+    public boolean checkForWin() {
+        
+        for (int i = 0; i < SIZE; i++) {
+            if (board[i][0] != '-' && board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
+                return true; // Row i is all the same symbol
+            }
+        }
+
+        
+        for (int j = 0; j < SIZE; j++) {
+            if (board[0][j] != '-' && board[0][j] == board[1][j] && board[0][j] == board[2][j]) {
+                return true; // Column j is all the same symbol
+            }
+        }
+
+       
+        if (board[0][0] != '-' && board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
+            return true; 
+        }
+        if (board[0][2] != '-' && board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
+            return true; 
+        }
+
+        return false; 
+    }
+
+    public boolean isBoardFull() {
+       
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (board[i][j] == '-') {
+                    return false; 
+                }
+            }
+        }
+        return true; 
+    }
+}
+
+TicTacFacade.java
+
+package com.aurionpro.model;
+
+public class TicTacFacade {
+	private TicTacBoard board;
+
+    public TicTacFacade() {
+        this.board = new TicTacBoard();
+    }
+
+    public boolean makeMove(int row, int col, Player player) {
+        return board.makeMove(row, col, player.getSymbol());
+    }
+
+    public boolean checkForWin() {
+        return board.checkForWin();
+    }
+
+    public boolean isBoardFull() {
+        return board.isBoardFull();
+    }
+
+}
+
+Player.java
+
+
+package com.aurionpro.model;
+
+
+	public class Player {
+	    private char symbol; // 'X' or 'O'
+
+	    public Player(char symbol) {
+	        this.symbol = symbol;
+	    }
+
+	    public char getSymbol() {
+	        return symbol;
+	    }
+	}
+
+
+
