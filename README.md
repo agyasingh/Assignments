@@ -1,0 +1,1 @@
+The banking application named Bankify is a versatile application. It is a CRUD application which is feature rich. This project has been built using JSP ,servlet and sql. It is using MVC architecture in the project.
